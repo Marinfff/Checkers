@@ -53,7 +53,7 @@ class Table extends Component {
 
     return ( 
     <div className = 'table' > {
-//Отрисовываем на странице ячейки по координатам Y X
+//Отрисовывем на странице ячейки по координатам Y X
         cells.map((value, index) => {
           return ( 
           <div className = {
@@ -97,7 +97,7 @@ class Figure extends Component {
     var figselect = this.state.figselect;
 //Получем через props из App массив с фигурами и координаты выбранно ячейки
     var Chess = this.props.chess;
-    var cellselect = this.props.cellpos;
+    var cellselect = this.props.cellpos;   
 //Округляем координаты кликов для сравнение с координатами обьектов в массиве
     var fround = (n) => {
       while (n % 50 !== 0) {
@@ -109,6 +109,11 @@ class Figure extends Component {
       var arrr = [fround(arr[0]), fround(arr[1])];
       return arrr;
     }
+//Функция для сброса координат выбранной ячейки через
+//коллбэк для сбрасывания стейта в App    
+    var cleanСell = ()=>{
+      this.props.cleanCell(null);
+    }
 
     console.log(figselect, cellselect);
 //Проверяем если была выбрана фигура и ячейка 
@@ -119,14 +124,27 @@ class Figure extends Component {
       for (let i = 0; i < Chess.length; i++) {
 //Сравниваем координаты и вызываем методы по условию
         if (Chess[i].posY === figround[0] && Chess[i].posX === figround[1]) {
-          if (Chess[i].posX < cellround[1]) {
-            Chess[i].right();
-          } else {
-            Chess[i].left();
+          if (Chess[i].color == 'white') {
+            if (Chess[i].posX < cellround[1]) {
+              Chess[i].bRight();
+              cleanСell();
+            } else {
+                Chess[i].bLeft();
+                cleanСell();
+            }
+          }else{
+            if (Chess[i].posX < cellround[1]) {
+              Chess[i].wRight();
+              cleanСell();
+            } else {
+                Chess[i].wLeft();
+                cleanСell();
+            }
           }
         }
       }
     }
+
     return ( 
     <div > {
 //Отрисовывем на странице фигуры по координатам Y X
@@ -164,6 +182,12 @@ class App extends Component {
       selectValue: value
     })
   };
+//коллбэк для сброса стейта (выбранная ячейка) из Figure
+  cleanCell = (value) => {
+    this.setState({
+      selectValue: value
+    })
+  };
 
   componentWillMount() {
     var fRowLeft = 50,
@@ -177,13 +201,37 @@ class App extends Component {
       this.posX = posX;
       this.posY = posY;
       this.color = color;
-      this.right = function() {
-        this.posY += -50;
+      this.wRight = function() {
+        this.posY -= 50;
         this.posX += 50;
       }
-      this.left = function() {
-        this.posY += -50;
-        this.posX += -50;
+      this.wLeft = function() {
+        this.posY -= 50;
+        this.posX -= 50;
+      }
+      this.bLeft = function() {
+        this.posY += 50;
+        this.posX -= 50;
+      }
+      this.bRight = function() {
+        this.posY += 50;
+        this.posX += 50;
+      }
+      this.wwRight = function() {
+        this.posY -= 100;
+        this.posX += 100;
+      }
+      this.wwLeft = function() {
+        this.posY -= 100;
+        this.posX -= 100;
+      }
+      this.bbLeft = function() {
+        this.posY += 100;
+        this.posX -= 100;
+      }
+      this.bbRight = function() {
+        this.posY += 100;
+        this.posX += 100;
       }
     }
 //Создаем массив с данными о каждой фигуре
@@ -238,6 +286,9 @@ class App extends Component {
       }
       cellpos = {
         cellposition
+      }
+      cleanCell = {
+        this.cleanCell
       }
       /><Table updateData = {
         this.updateData
