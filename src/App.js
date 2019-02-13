@@ -2,13 +2,6 @@ import React, {Component} from 'react';
 import './App.css';
 
 class Table extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectValue: 0
-    };
-  }
-
   render() {
     var cells = [],
       pox = 0,
@@ -53,7 +46,7 @@ class Table extends Component {
 
     return ( 
     <div className = 'table' > {
-//Отрисовывем на странице ячейки по координатам Y X
+//Отрисовываем на странице ячейки по координатам Y X
         cells.map((value, index) => {
           return ( 
           <div className = {
@@ -95,7 +88,7 @@ class Figure extends Component {
     }
 
     var figselect = this.state.figselect;
-//Получем через props из App массив с фигурами и координаты выбранно ячейки
+//Получем через props из App массив с фигурами и координаты выбранной ячейки
     var Chess = this.props.chess;
     var cellselect = this.props.cellpos;   
 //Округляем координаты кликов для сравнение с координатами обьектов в массиве
