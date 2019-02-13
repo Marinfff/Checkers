@@ -10,16 +10,16 @@ class Table extends Component {
   }
 
   render() {
-    var cells = [];
-    var pox = 0,
+    var cells = [],
+      pox = 0,
       poy = 0;
-
+//Создаем функцию конструктор для массива с ячейками
     function CreateTable(posY, posX, color) {
       this.posX = posX;
       this.posY = posY;
       this.color = color;
     }
-
+//Генерируем массив с данными о каждой ячейке
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 4; j++) {
         if ((i % 2) == 0) {
@@ -45,7 +45,7 @@ class Table extends Component {
       poy += 50;
       pox = 0;
     }
-
+//Отпраляем через коллбэк координаты выбранной ячейки в App
     var handleClick = (e) => {
       var arr = [e.pageY, e.pageX];
       this.props.updateData(arr);
@@ -53,6 +53,7 @@ class Table extends Component {
 
     return ( 
     <div className = 'table' > {
+//Отрисовывем на странице ячейки по координатам Y X
         cells.map((value, index) => {
           return ( 
           <div className = {
@@ -85,7 +86,7 @@ class Figure extends Component {
 
   render() {
     var figround, cellround;
-
+//Принимает и добавляем в стейт координаты выбранной фигуры
     var handleClick = (e) => {
       var arr = [e.pageY, e.pageX];
       this.setState({
@@ -94,29 +95,29 @@ class Figure extends Component {
     }
 
     var figselect = this.state.figselect;
-    var cellselect = this.props.cellpos;
+//Получем через props из App массив с фигурами и координаты выбранно ячейки
     var Chess = this.props.chess;
-
+    var cellselect = this.props.cellpos;
+//Округляем координаты кликов для сравнение с координатами обьектов в массиве
     var fround = (n) => {
       while (n % 50 !== 0) {
         n--;
       }
       return n;
     }
-
     var round = (arr) => {
       var arrr = [fround(arr[0]), fround(arr[1])];
       return arrr;
     }
 
     console.log(figselect, cellselect);
-
+//Проверяем если была выбрана фигура и ячейка 
     if (figselect !== null && cellselect !== null) {
       figround = round(figselect);
       cellround = round(cellselect);
 
       for (let i = 0; i < Chess.length; i++) {
-
+//Сравниваем координаты и вызываем методы по условию
         if (Chess[i].posY === figround[0] && Chess[i].posX === figround[1]) {
           if (Chess[i].posX < cellround[1]) {
             Chess[i].right();
@@ -128,6 +129,7 @@ class Figure extends Component {
     }
     return ( 
     <div > {
+//Отрисовывем на странице фигуры по координатам Y X
         Chess.map((value, index) => {
           return ( 
           <div className = {
@@ -155,6 +157,8 @@ class App extends Component {
     selectValue: null,
     chesss: []
   };
+//коллбэк для получения координат выбранной ячейки из Table
+// и добавления их в стейт
   updateData = (value) => {
     this.setState({
       selectValue: value
@@ -168,7 +172,7 @@ class App extends Component {
       white = "white";
 
     var chess = [];
-
+//Создаем функцию конструктор для фигур и методы для перемещения по доске
     function CreateObj(posY, posX, color) {
       this.posX = posX;
       this.posY = posY;
@@ -182,7 +186,7 @@ class App extends Component {
         this.posX += -50;
       }
     }
-
+//Создаем массив с данными о каждой фигуре
     for (var i = 0; i < 32; i++) {
       if (i <= 4 && i >= 1) {
         chess.push(
@@ -216,6 +220,7 @@ class App extends Component {
         fRowLeft += 100;
       }
     }
+//Добавляем в стейт полученный массив для использования его в рендере
     if (this.state.chesss == 0) {
       this.setState({
         chesss: chess
@@ -225,7 +230,7 @@ class App extends Component {
 
   render() {
     var cellposition = this.state.selectValue;
-
+//Отправляем в Figure массив с обьектами и координаты выбранной ячейки 
     return ( 
     <div >
       <Figure chess = {
