@@ -53,7 +53,7 @@ class Table extends Component {
 
     return ( 
     <div className = 'table' > {
-//Отрисовывем на странице ячейки по координатам Y X
+//Отрисовываем на странице ячейки по координатам Y X
         cells.map((value, index) => {
           return ( 
           <div className = {
