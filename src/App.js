@@ -5,8 +5,8 @@ class Table extends Component {
   render() {
     var 
       cells = [],
-      pox = 0,
-      poy = 0;
+      posX = 0,
+      posY = 0;
     cells = initTable(cells);
 
     //Создаем функцию конструктор для массива с ячейками
@@ -28,27 +28,34 @@ class Table extends Component {
               second = 'blackcell';   
           }
           cells.push(
-            new CreateTable(poy, pox, second)
+            new CreateTable(posY, posX, second)
           );
-          pox += 50;
+          posX += 50;
           cells.push(
-            new CreateTable(poy, pox, first)
+            new CreateTable(posY, posX, first)
           );
-          pox += 50;
+          posX += 50;
         }
-        poy += 50;
-        pox = 0;
+        posY += 50;
+        posX = 0;
       }
       return cells;
     }
 
-    
-    
-//Отпраляем через коллбэк координаты выбранной ячейки в App
+//Отпраляем через коллбэк обьект c данными выбранной ячейки в App
     var handleClick = (e) => {
-      console.log('cell');
       var arr = [e.pageY, e.pageX];
-      this.props.updateData(arr);
+            let scell = cells;
+
+      for (var i = 0; i < scell.length; i++) {
+        if(
+            arr[0] >= scell[i].posY && arr[0] <= scell[i].posY + 50
+            &&
+            arr[1] >= scell[i].posX && arr[1] <= scell[i].posX + 50
+          ){
+            this.props.updateData(scell[i]);
+        }
+      }
     }
 
     return ( 
@@ -58,7 +65,10 @@ class Table extends Component {
           return ( 
           <div className = {
               value.color
-            }            
+            }
+            data-id = {
+              'cell_' + index
+            }       
             style = {
               {
                 top: value.posY + 'px',
@@ -85,96 +95,50 @@ class Figure extends Component {
   }
 
   render() {
-    var figround, cellround;
-//Принимает и добавляем в стейт координаты выбранной фигуры
+//Принимает и добавляем в стейт обьект c данными выбранной фигуры
     var handleClick = (e) => {
-
-      console.log(e.currentTarget.dataset.id);
       var arr = [e.pageY, e.pageX];
-      this.setState({
-        figselect: arr
-      });
+
       let figures = this.props.chess;
       
-
-      let clickedCell = 0;
-
       for (var i = 0; i < figures.length; i++) {
-        //console.log(figures[i], arr);
-        console.log(arr);
         if(
             arr[0] >= figures[i].posY && arr[0] <= figures[i].posY + 50
             &&
             arr[1] >= figures[i].posX && arr[1] <= figures[i].posX + 50
           ){
-          console.log(i);
-        clickedCell = i;
+            this.setState({
+              figselect: figures[i]
+            });
         }
       }
-
-      this.props.chess[clickedCell].posY -= 50;
-
-
-
-
     }
 
     var figselect = this.state.figselect;
-//Получем через props из App массив с фигурами и координаты выбранной ячейки
+//Получем через props из App массив с фигурами и обьект с данными выбранной ячейки
     var Chess = this.props.chess;
     var cellselect = this.props.cellpos;   
-//Округляем координаты кликов для сравнение с координатами обьектов в массиве
-    var fround = (n) => {
-      while (n % 50 !== 0) {
-        n--;
-      }
-      return n;
-    }
-    var round = (arr) => {
-      var arrr = [fround(arr[0]), fround(arr[1])];
-      return arrr;
-    }
-//Функция для сброса координат выбранной ячейки через
+
+    console.log(cellselect);
+    console.log(figselect);
 //коллбэк для сбрасывания стейта в App    
     var cleanСell = ()=>{
       this.props.cleanCell(null);
     }
 
-    //console.log(figselect, cellselect);
-    //console.log(Chess);
 //Проверяем если была выбрана фигура и ячейка 
-    if (figselect !== null && cellselect !== null) {
-      figround = round(figselect);
-      cellround = round(cellselect);
-
-      for (let i = 0; i < Chess.length; i++) {
-//Сравниваем координаты и вызываем методы по условию
-        if (Chess[i].posY === figround[0] && Chess[i].posX === figround[1]) {
-          if (Chess[i].color == 'white') {
-            if (Chess[i].posX < cellround[1]) {
-              Chess[i].bRight();
-              cleanСell();
-              //console.log(Chess);
-            } else {
-                Chess[i].bLeft();
-                cleanСell();
-                //console.log(Chess);
-            }
-          }else{
-            if (Chess[i].posX < cellround[1]) {
-              Chess[i].wRight();
-              cleanСell();
-              //console.log(Chess);
-            } else {
-                Chess[i].wLeft();
-                cleanСell();
-                //console.log(Chess);
-            }
-          }
+    if (cellselect != null && figselect != null) {
+      if (cellselect.color !== 'whitecell') {
+        if(cellselect.posX < figselect.posX){
+          figselect.wLeft();
+          cleanСell();
+        }else{
+          figselect.wRight();
+          cleanСell();
         }
-      }
+      } 
     }
-
+  
     return ( 
     <div > {
 //Отрисовывем на странице фигуры по координатам Y X
@@ -183,7 +147,9 @@ class Figure extends Component {
           <div className = {
               value.color
             }
-            data-id = {value.posY  + '_' + value.posX}
+            data-id = {
+              'figure_' + index
+            }
             style = {
               {
                 top: value.posY + 'px',
