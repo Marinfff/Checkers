@@ -90,7 +90,8 @@ class Figure extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      figselect: null
+      figselect: null,
+      round : 'black'
     };
   }
 
@@ -117,24 +118,77 @@ class Figure extends Component {
     var figselect = this.state.figselect;
 //Получем через props из App массив с фигурами и обьект с данными выбранной ячейки
     var Chess = this.props.chess;
-    var cellselect = this.props.cellpos;   
+    var cellselect = this.props.cellpos;
+    var round = this.state.round;   
 
-    console.log(cellselect);
-    console.log(figselect);
-//коллбэк для сбрасывания стейта в App    
+//Коллбэк для сбрасывания выбранной ячейки (стейта) в App    
     var cleanСell = ()=>{
       this.props.cleanCell(null);
     }
+//Проверка на совпадения цвета и очереди хода
+    var reviseRound = (color1, color2)=>{
+      if (figselect.color == color1 ) {
+        colorFig(color2);
+      }else{
+        cleanСell();
+      }
+    }
+//Проверка направления хода и смена очереди (стейта)
+  var colorFig = (color2)=>{
+    if (color2 == 'black') {
+      if (figselect.posX < cellselect.posX) {
+        var direction = 'bR';
+          movingFig(direction);
+          cleanСell();
+          this.setState({
+            round : color2
+          });  
+      }else{
+        var direction = 'bL';
+          movingFig(direction);
+          cleanСell();
+          this.setState({
+            round : color2
+          });
+      }
+    }else{
+      if (figselect.posX < cellselect.posX) {
+        var direction = 'wR';
+          movingFig(direction);
+          cleanСell();
+          this.setState({
+            round : color2
+          });  
+      }else{
+        var direction = 'wL';
+          movingFig(direction);
+          cleanСell();
+          this.setState({
+            round : color2
+          });
+      }
+    }
+  }
+//Определяем тип хода, через 1 или 2 ячейки 
+  var movingFig = (direction)=>{
+    if (direction == 'bR') {
+      figselect.bRight();
+    }else if(direction == 'bL') {
+      figselect.bLeft();
+    }else if(direction == 'wR'){
+      figselect.wRight();
+    }else if(direction == 'wL'){
+      figselect.wLeft();
+    }
+  }
 
-//Проверяем если была выбрана фигура и ячейка 
+//Проверяем если была выбрана фигура и ячейка и вызываем обработчик очереди
     if (cellselect != null && figselect != null) {
       if (cellselect.color !== 'whitecell') {
-        if(cellselect.posX < figselect.posX){
-          figselect.wLeft();
-          cleanСell();
+        if (round == 'black') {
+          reviseRound('black','white');
         }else{
-          figselect.wRight();
-          cleanСell();
+          reviseRound('white','black');
         }
       } 
     }
@@ -162,7 +216,9 @@ class Figure extends Component {
             </div>
           );
         })
-      } </div>
+      } 
+      <p>Ход : {round}</p>
+      </div>
     );
   }
 }
