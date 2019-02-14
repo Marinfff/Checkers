@@ -3,43 +3,50 @@ import './App.css';
 
 class Table extends Component {
   render() {
-    var cells = [],
+    var 
+      cells = [],
       pox = 0,
       poy = 0;
-//Создаем функцию конструктор для массива с ячейками
+    cells = initTable(cells);
+
+    //Создаем функцию конструктор для массива с ячейками
     function CreateTable(posY, posX, color) {
       this.posX = posX;
       this.posY = posY;
       this.color = color;
     }
-//Генерируем массив с данными о каждой ячейке
-    for (var i = 0; i < 8; i++) {
-      for (var j = 0; j < 4; j++) {
-        if ((i % 2) == 0) {
+
+    function initTable(cells){
+      //Генерируем массив с данными о каждой ячейке
+      for (var i = 1; i <= 8; i++) {
+        for (var j = 1; j <= 4; j++) {
+          let 
+              first = 'blackcell',
+              second = 'whitecell';
+          if (i % 2 === 0) {
+              first = 'whitecell'
+              second = 'blackcell';   
+          }
           cells.push(
-            new CreateTable(poy, pox, 'whitecell')
+            new CreateTable(poy, pox, second)
           );
           pox += 50;
           cells.push(
-            new CreateTable(poy, pox, 'blackcell')
-          );
-          pox += 50;
-        } else {
-          cells.push(
-            new CreateTable(poy, pox, 'blackcell')
-          );
-          pox += 50;
-          cells.push(
-            new CreateTable(poy, pox, 'whitecell')
+            new CreateTable(poy, pox, first)
           );
           pox += 50;
         }
+        poy += 50;
+        pox = 0;
       }
-      poy += 50;
-      pox = 0;
+      return cells;
     }
+
+    
+    
 //Отпраляем через коллбэк координаты выбранной ячейки в App
     var handleClick = (e) => {
+      console.log('cell');
       var arr = [e.pageY, e.pageX];
       this.props.updateData(arr);
     }
@@ -51,7 +58,7 @@ class Table extends Component {
           return ( 
           <div className = {
               value.color
-            }
+            }            
             style = {
               {
                 top: value.posY + 'px',
@@ -81,10 +88,35 @@ class Figure extends Component {
     var figround, cellround;
 //Принимает и добавляем в стейт координаты выбранной фигуры
     var handleClick = (e) => {
+
+      console.log(e.currentTarget.dataset.id);
       var arr = [e.pageY, e.pageX];
       this.setState({
         figselect: arr
       });
+      let figures = this.props.chess;
+      
+
+      let clickedCell = 0;
+
+      for (var i = 0; i < figures.length; i++) {
+        //console.log(figures[i], arr);
+        console.log(arr);
+        if(
+            arr[0] >= figures[i].posY && arr[0] <= figures[i].posY + 50
+            &&
+            arr[1] >= figures[i].posX && arr[1] <= figures[i].posX + 50
+          ){
+          console.log(i);
+        clickedCell = i;
+        }
+      }
+
+      this.props.chess[clickedCell].posY -= 50;
+
+
+
+
     }
 
     var figselect = this.state.figselect;
@@ -108,7 +140,8 @@ class Figure extends Component {
       this.props.cleanCell(null);
     }
 
-    console.log(figselect, cellselect);
+    //console.log(figselect, cellselect);
+    //console.log(Chess);
 //Проверяем если была выбрана фигура и ячейка 
     if (figselect !== null && cellselect !== null) {
       figround = round(figselect);
@@ -121,17 +154,21 @@ class Figure extends Component {
             if (Chess[i].posX < cellround[1]) {
               Chess[i].bRight();
               cleanСell();
+              //console.log(Chess);
             } else {
                 Chess[i].bLeft();
                 cleanСell();
+                //console.log(Chess);
             }
           }else{
             if (Chess[i].posX < cellround[1]) {
               Chess[i].wRight();
               cleanСell();
+              //console.log(Chess);
             } else {
                 Chess[i].wLeft();
                 cleanСell();
+                //console.log(Chess);
             }
           }
         }
@@ -146,6 +183,7 @@ class Figure extends Component {
           <div className = {
               value.color
             }
+            data-id = {value.posY  + '_' + value.posX}
             style = {
               {
                 top: value.posY + 'px',
