@@ -1,11 +1,25 @@
+
 body{
   margin: 0;
+  overflow: hidden;
+background-image: url('1111.jpg');
+
 }
 
 .table{
   display: grid;
   width: 400px;
   height: 400px; 
+  position: absolute;
+  margin-top: 150px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.figure{
+  width: 400px;
+  height: 400px; 
+  position: absolute;
+  margin-top: 150px; 
 }
 
 div{
@@ -20,15 +34,12 @@ div{
   background-image: url(black.png);
   background-size: 100%;
   z-index: 99;
-
-
 }
 
 .white{
   background-image: url(white.png);
   background-size: 100%;
   z-index: 99;
-
 }
 
 .blackcell{
@@ -37,7 +48,52 @@ div{
 
 .whitecell{
   background-color: #F0AF6F;
+}
 
+p{
+  position: absolute;
+  margin-top: 420px;
+  margin-left: 300px;
+  font-size: 20px;
+  color: white;
+}
+
+.bcount{
+  margin-top: 65px;
+  margin-left: 270px;
+  transform: rotate(180deg);
+}
+
+.wcount{
+  margin-top: 575px;
+  margin-left: 80px;
+
+}
+
+.visibile{
+  visibility: hidden;
+}
+
+.rwclass, .bcount , .wcount ,.rbclass{
+  position: absolute;
+  font-size: 30px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif ;
+  color: white;
+}
+
+.rwclass{
+  width: 300px;
+  font-size: 25px;
+  margin-top: 575px;
+  margin-left: 240px;
+}
+
+.rbclass{
+  margin-top: 65px;
+  margin-left: -140px;
+  width: 300px;
+  font-size: 25px;
+  transform: rotate(180deg);
 }
 
 
