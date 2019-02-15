@@ -127,7 +127,7 @@ class Figure extends Component {
     }
 //Проверка на совпадения цвета и очереди хода
     var reviseRound = (color1, color2)=>{
-      if (figselect.color == color1 ) {
+      if (figselect.color === color1 ) {
         colorFig(color2);
       }else{
         cleanСell();
@@ -135,16 +135,17 @@ class Figure extends Component {
     }
 //Проверка направления хода и смена очереди (стейта)
   var colorFig = (color2)=>{
-    if (color2 == 'black') {
+    if (color2 === 'black') {
+      var direction ;
       if (figselect.posX < cellselect.posX) {
-        var direction = 'bR';
+         direction = 'bR';
           movingFig(direction);
           cleanСell();
           this.setState({
             round : color2
           });  
       }else{
-        var direction = 'bL';
+         direction = 'bL';
           movingFig(direction);
           cleanСell();
           this.setState({
@@ -153,14 +154,14 @@ class Figure extends Component {
       }
     }else{
       if (figselect.posX < cellselect.posX) {
-        var direction = 'wR';
+         direction = 'wR';
           movingFig(direction);
           cleanСell();
           this.setState({
             round : color2
           });  
       }else{
-        var direction = 'wL';
+         direction = 'wL';
           movingFig(direction);
           cleanСell();
           this.setState({
@@ -169,30 +170,102 @@ class Figure extends Component {
       }
     }
   }
-//Определяем тип хода, через 1 или 2 ячейки 
-  var movingFig = (direction)=>{
-    if (direction == 'bR') {
+//Функция для простого хода в зависимости от направления
+  var simpleMove = (direction) => {
+    if (direction === 'bR') {
       figselect.bRight();
-    }else if(direction == 'bL') {
+    }else if(direction === 'bL') {
       figselect.bLeft();
-    }else if(direction == 'wR'){
+    }else if(direction === 'wR'){
       figselect.wRight();
-    }else if(direction == 'wL'){
+    }else if(direction === 'wL'){
       figselect.wLeft();
     }
+  }
+
+//Функция для двойного хода в зависимости от направления
+  var superMove = (direction) => {
+    if (direction === 'bR') {
+      figselect.bbRight();
+    }else if(direction === 'bL') {
+      figselect.bbLeft();
+    }else if(direction === 'wR'){
+      figselect.wwRight();
+    }else if(direction === 'wL'){
+      figselect.wwLeft();
+    }
+  }
+//Сбрасыываем figselect до значения после клика 
+  var returnFigPos = (color,direction) =>{
+    if (figselect.color == color) {
+      if (direction == 'wR') {
+        figselect.posX -= 50;
+        figselect.posY += 50;
+      }else{
+        figselect.posX += 50;
+        figselect.posY += 50;
+      }
+    }else{
+      if (direction == 'bR') {
+        figselect.posX -= 50;
+        figselect.posY -= 50;
+      }else{
+        figselect.posX += 50;
+        figselect.posY -= 50;
+      }
+    }
+  }
+
+//Проверяем есть ли в соседних ячейках фигуры для выбора типа хода
+  var checkCell = (direction) =>{
+//Готовим координаты соседней ячейки для сравнения 
+//в зависимости от направления и цвета фигуры
+    if (figselect.color == 'black') {
+      if (direction == 'wR') {
+        var Y = -50;
+        var X = 50; 
+      }else{
+        var Y = -50;
+      var  X = -50; 
+      }
+    }else{
+      if (direction == 'bR') {
+        var Y = 50;
+        var X = 50; 
+      }else{
+        var Y = 50;
+        var  X = -50; 
+      }
+    }
+//Провряем есть ли на соседней ячейке фигура
+    for (let i = 0; i < Chess.length; i ++) {
+      if (
+        Chess[i].posY === (figselect.posY + Y) 
+        && Chess[i].posX === (figselect.posX + X)
+        && Chess[i].color !== figselect.color
+        ){
+          returnFigPos('black',direction);
+          superMove(direction);
+          Chess = Chess.splice(i,1);
+      }
+    }
+  }
+  //Инициализируем ход в зависимости от checkCell
+  var movingFig = (direction)=>{
+   !checkCell(direction) && simpleMove(direction);
   }
 
 //Проверяем если была выбрана фигура и ячейка и вызываем обработчик очереди
     if (cellselect != null && figselect != null) {
       if (cellselect.color !== 'whitecell') {
-        if (round == 'black') {
+        if (round === 'black') {
           reviseRound('black','white');
         }else{
           reviseRound('white','black');
         }
       } 
     }
-  
+
     return ( 
     <div > {
 //Отрисовывем на странице фигуры по координатам Y X
@@ -321,6 +394,7 @@ class App extends Component {
         fRowLeft += 100;
       }
     }
+
 //Добавляем в стейт полученный массив для использования его в рендере
     if (this.state.chesss == 0) {
       this.setState({
