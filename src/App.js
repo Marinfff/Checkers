@@ -6,7 +6,6 @@ class UI extends Component{
   var Chess = this.props.chess;
   var bclass, wclass, rbclass, rwclass;
 
-  console.log(this.props.round);
 //Счетчик для удаленных шашек 
     var wcount = 0, bcount = 0;  
     for (let i = 0; i < Chess.length; i++) {
@@ -30,10 +29,10 @@ class UI extends Component{
 
     if (this.props.round == 'black') {
       rbclass = 'rbclass';
-      rwclass = 'visibile';
+      rwclass = 'wvisibile';
     }else{
       rwclass = 'rwclass';
-      rbclass = 'visibile';
+      rbclass = 'bvisibile';
     }
 
     return (
@@ -92,7 +91,6 @@ class Table extends Component {
     var handleClick = (e) => {
       var arr = [e.pageY - 150, e.pageX];
             let scell = cells;
-            console.log(arr[0]);
 
       for (var i = 0; i < scell.length; i++) {
         if(
@@ -146,7 +144,6 @@ class Figure extends Component {
 //Принимает и добавляем в стейт обьект c данными выбранной фигуры
     var handleClick = (e) => {
       var arr = [e.pageY - 150, e.pageX];
-      console.log(arr[0]);
 
       let figures = this.props.chess;
       
@@ -181,7 +178,7 @@ class Figure extends Component {
         cleanСell();
       }
     }
-//Функция для смены раунда
+//Функция для смены очереди в стейте и UI
 var setRound = (direction,color2)=>{
   movingFig(direction);
   cleanСell();
@@ -219,7 +216,7 @@ var setRound = (direction,color2)=>{
       figselect.bLeft();
     }else if(direction === 'wR'){
       figselect.wRight();
-    }else if(direction === 'wL'){
+    }else if(direction === 'wL'){ 
       figselect.wLeft();
     }
   }
@@ -313,6 +310,8 @@ var setRound = (direction,color2)=>{
       }
     }
 
+   
+
     return ( 
     <div className = 'figure' > {
 //Отрисовывем на странице фигуры по координатам Y X
@@ -337,7 +336,6 @@ var setRound = (direction,color2)=>{
           );
         })
       } 
-      <div>Ход : {round}</div>
       </div>
     );
   }

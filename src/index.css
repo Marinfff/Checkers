@@ -2,8 +2,7 @@
 body{
   margin: 0;
   overflow: hidden;
-background-image: url('1111.jpg');
-
+  background-image: url('1111.jpg');
 }
 
 .table{
@@ -28,6 +27,10 @@ div{
   width: 50px;
   height: 50px;
   transition-duration: 0.5s;
+}
+
+.figure img{
+  width: 100% ;
 }
 
 .black{
@@ -67,11 +70,25 @@ p{
 .wcount{
   margin-top: 575px;
   margin-left: 80px;
-
 }
 
 .visibile{
+  overflow: hidden;
+  opacity: 0;
+}
+
+.wvisibile{
   visibility: hidden;
+  margin-top: 575px;
+  margin-left: 250px;
+  opacity: 0;
+}
+.bvisibile{
+  visibility: hidden;
+  margin-top: 65px;
+  margin-left: 20px;
+  opacity: 0;
+  transform: rotate(180deg);
 }
 
 .rwclass, .bcount , .wcount ,.rbclass{
@@ -82,18 +99,26 @@ p{
 }
 
 .rwclass{
-  width: 300px;
+  width: 150px;
   font-size: 25px;
   margin-top: 575px;
   margin-left: 240px;
+  z-index: 1;
 }
 
 .rbclass{
   margin-top: 65px;
-  margin-left: -140px;
-  width: 300px;
+  margin-left: 10px;
+  width: 150px;
   font-size: 25px;
   transform: rotate(180deg);
+  z-index: 1;
 }
+
+img{
+  width: 0%;
+}
+
+
 
 
