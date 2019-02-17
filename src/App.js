@@ -1,36 +1,38 @@
 import React, {Component} from 'react';
 import './App.css';
 
-class UI extends Component{
-  render(){
-  var Chess = this.props.chess;
-  var bclass, wclass, rbclass, rwclass;
+class UI extends Component {
+  render() {
+    var Chess = this.props.chess;
+    var bclass, wclass, rbclass, rwclass;
 
-//Счетчик для удаленных шашек 
-    var wcount = 0, bcount = 0;  
+    //Счетчик для удаленных шашек 
+    var wcount = 0,
+      bcount = 0;
     for (let i = 0; i < Chess.length; i++) {
       if (Chess[i].posY < 0) {
-        bcount ++;
-      }else if (Chess[i].posY > 400) {
-        wcount ++;
-      } 
-    }
-//Проверяем можно ли отрисовать элементы
-    if (bcount == 0) {
-      bclass = 'visibile';
-    }else{
-      bclass = 'bcount'; 
-    }
-    if (wcount == 0) {
-      wclass = 'visibile';
-    }else{
-      wclass = 'wcount'; 
+        bcount++;
+      } else if (Chess[i].posY > 400) {
+        wcount++;
+      }
     }
 
-    if (this.props.round == 'black') {
+    //Проверяем можно ли отрисовать элементы
+    if (bcount === 0) {
+      bclass = 'visibile';
+    } else {
+      bclass = 'bcount';
+    }
+    if (wcount === 0) {
+      wclass = 'visibile';
+    } else {
+      wclass = 'wcount';
+    }
+
+    if (this.props.round === 'black') {
       rbclass = 'rbclass';
       rwclass = 'wvisibile';
-    }else{
+    } else {
       rwclass = 'rwclass';
       rbclass = 'bvisibile';
     }
@@ -40,7 +42,7 @@ class UI extends Component{
         <div className ={rbclass}>Ваш ход!</div>
         <div className = {bclass}>x {bcount}</div>
         <div className ={rwclass}>Ваш ход!</div>
-      <div className = {wclass}>x {wcount}</div>
+        <div className = {wclass}>x {wcount}</div>
       </div>
     );
   }
@@ -48,7 +50,7 @@ class UI extends Component{
 
 class Table extends Component {
   render() {
-    var 
+    var
       cells = [],
       posX = 0,
       posY = 0;
@@ -61,16 +63,16 @@ class Table extends Component {
       this.color = color;
     }
 
-    function initTable(cells){
-      //Генерируем массив с данными о каждой ячейке
-      for (var i = 1; i <= 8; i++) {
-        for (var j = 1; j <= 4; j++) {
-          let 
-              first = 'blackcell',
-              second = 'whitecell';
+    //Генерируем массив с данными о каждой ячейке
+    function initTable(cells) {
+      for (let i = 1; i <= 8; i++) {
+        for (let j = 1; j <= 4; j++) {
+          let
+            first = 'blackcell',
+            second = 'whitecell';
           if (i % 2 === 0) {
-              first = 'whitecell'
-              second = 'blackcell';   
+            first = 'whitecell'
+            second = 'blackcell';
           }
           cells.push(
             new CreateTable(posY, posX, second)
@@ -87,25 +89,25 @@ class Table extends Component {
       return cells;
     }
 
-//Отпраляем через коллбэк обьект c данными выбранной ячейки в App
+    //Отправляем через коллбэк обьект c данными выбранной ячейки в App
     var handleClick = (e) => {
-      var arr = [e.pageY - 150, e.pageX];
-            let scell = cells;
+      let arr = [e.pageY - 150, e.pageX];
+      let scell = cells;
 
-      for (var i = 0; i < scell.length; i++) {
-        if(
-            arr[0] >= scell[i].posY && arr[0] <= scell[i].posY + 50
-            &&
-            arr[1] >= scell[i].posX && arr[1] <= scell[i].posX + 50
-          ){
-            this.props.updateData(scell[i]);
+      for (let i = 0; i < scell.length; i++) {
+        if (
+          arr[0] >= scell[i].posY && arr[0] <= scell[i].posY + 50 &&
+          arr[1] >= scell[i].posX && arr[1] <= scell[i].posX + 50
+        ) {
+          this.props.updateData(scell[i]);
         }
       }
     }
 
-    return ( 
-    <div className = 'table' > {
-//Отрисовываем на странице ячейки по координатам Y X
+    return (
+      <div className = 'table' > {
+
+      //Отрисовываем на странице ячейки по координатам Y X
         cells.map((value, index) => {
           return ( 
           <div className = {
@@ -136,185 +138,228 @@ class Figure extends Component {
     super(props);
     this.state = {
       figselect: null,
-      round : 'black'
+      round: 'black'
     };
   }
 
   render() {
-//Принимает и добавляем в стейт обьект c данными выбранной фигуры
+
+    //Принимает и добавляем в стейт обьект c данными выбранной фигуры
     var handleClick = (e) => {
-      var arr = [e.pageY - 150, e.pageX];
+      let arr = [e.pageY - 150, e.pageX];
 
       let figures = this.props.chess;
-      
-      for (var i = 0; i < figures.length; i++) {
-        if(
-            arr[0] >= figures[i].posY && arr[0] <= figures[i].posY + 50
-            &&
-            arr[1] >= figures[i].posX && arr[1] <= figures[i].posX + 50
-          ){
-            this.setState({
-              figselect: figures[i]
-            });
+
+      for (let i = 0; i < figures.length; i++) {
+        if (
+          arr[0] >= figures[i].posY && arr[0] <= figures[i].posY + 50 &&
+          arr[1] >= figures[i].posX && arr[1] <= figures[i].posX + 50
+        ) {
+          this.setState({
+            figselect: figures[i]
+          });
         }
       }
     }
 
-    var figselect = this.state.figselect;
-//Получем через props из App массив с фигурами и обьект с данными выбранной ячейки
-    var Chess = this.props.chess;
-    var cellselect = this.props.cellpos;
-    var round = this.state.round;   
+    //Получем через props из App массив с фигурами и обьект с данными выбранной ячейки
+    var 
+      figselect = this.state.figselect,
+      Chess = this.props.chess,
+      cellselect = this.props.cellpos,
+      round = this.state.round;
 
-//Коллбэк для сбрасывания выбранной ячейки (стейта) в App    
-    var cleanСell = ()=>{
+    //Коллбэк для сбрасывания выбранной ячейки (стейта) в App    
+    var cleanСell = () => {
       this.props.cleanCell(null);
     }
-//Проверка на совпадения цвета и очереди хода
-    var reviseRound = (color1, color2)=>{
-      if (figselect.color === color1 ) {
+
+    //Проверка на совпадения цвета и очереди хода
+    var reviseRound = (color1, color2) => {
+      if (figselect.color === color1) {
         colorFig(color2);
-      }else{
+      } else {
         cleanСell();
       }
     }
-//Функция для смены очереди в стейте и UI
-var setRound = (direction,color2)=>{
-  movingFig(direction);
-  cleanСell();
-    this.setState({
-      round : color2
-    }); 
-  this.props.updateRound(this.state.round); 
-}
-//Проверка направления хода и смена очереди (стейта)
-  var colorFig = (color2)=>{
-    if (color2 === 'black') {
-      var direction ;
-      if (figselect.posX < cellselect.posX) {
-         direction = 'bR';
-         setRound(direction,color2);
-      }else{
-         direction = 'bL';
-         setRound(direction,color2);
-      }
-    }else{
-      if (figselect.posX < cellselect.posX) {
-         direction = 'wR';
-         setRound(direction,color2);
-      }else{
-         direction = 'wL';
-         setRound(direction,color2);
-      }
-    }
-  }
-//Функция для простого хода в зависимости от направления
-  var simpleMove = (direction) => {
-    if (direction === 'bR') {
-      figselect.bRight();
-    }else if(direction === 'bL') {
-      figselect.bLeft();
-    }else if(direction === 'wR'){
-      figselect.wRight();
-    }else if(direction === 'wL'){ 
-      figselect.wLeft();
-    }
-  }
 
-//Функция для двойного хода в зависимости от направления
-  var superMove = (direction) => {
-    if (direction === 'bR') {
-      figselect.bbRight();
-    }else if(direction === 'bL') {
-      figselect.bbLeft();
-    }else if(direction === 'wR'){
-      figselect.wwRight();
-    }else if(direction === 'wL'){
-      figselect.wwLeft();
+    //Функция для смены очереди в стейте и UI
+    var setRound = (direction, color2) => {
+      movingFig(direction);
+      cleanСell();
+      this.setState({
+        round: color2
+      });
+      this.props.updateRound(this.state.round);
     }
-  }
-//Сбрасыываем figselect до значения после клика 
-  var returnFigPos = (color,direction) =>{
-    if (figselect.color == color) {
-      if (direction == 'wR') {
-        figselect.posX -= 50;
-        figselect.posY += 50;
-      }else{
-        figselect.posX += 50;
-        figselect.posY += 50;
-      }
-    }else{
-      if (direction == 'bR') {
-        figselect.posX -= 50;
-        figselect.posY -= 50;
-      }else{
-        figselect.posX += 50;
-        figselect.posY -= 50;
-      }
-    }
-  }
 
-//Проверяем есть ли в соседних ячейках фигуры для выбора типа хода
-  var checkCell = (direction) =>{
-//Готовим координаты соседней ячейки для сравнения 
-//в зависимости от направления и цвета фигуры
-    if (figselect.color == 'black') {
-      if (direction == 'wR') {
-        var Y = -50;
-        var X = 50; 
-      }else{
-        var Y = -50;
-      var  X = -50; 
-      }
-    }else{
-      if (direction == 'bR') {
-        var Y = 50;
-        var X = 50; 
-      }else{
-        var Y = 50;
-        var  X = -50; 
-      }
-    }
-//Проверяем есть ли на соседней ячейке фигура
-    for (let i = 0; i < Chess.length; i ++) {   
-      if (
-        Chess[i].posY === (figselect.posY + Y) 
-        && Chess[i].posX === (figselect.posX + X)
-        && Chess[i].color !== figselect.color
-        ){
-          returnFigPos('black',direction);
-          superMove(direction);
-          if (Chess[i].color == 'black') {
-            Chess[i].posX = 330;
-            Chess[i].posY = -80;
-          }else{
-            Chess[i].posX = 20;
-            Chess[i].posY = 420;
-          }
-      }
-    }
-  }
-  //Инициализируем ход в зависимости от checkCell
-  var movingFig = (direction)=>{
-   !checkCell(direction) && simpleMove(direction);
-  }
-
-//Проверяем если была выбрана фигура и ячейка и вызываем обработчик очереди
-    if (cellselect != null && figselect != null) {
-      if (cellselect.color !== 'whitecell') {
-        if (round === 'black' && cellselect.posY < figselect.posY) {
-          reviseRound('black','white');
-        }else if(round === 'white' && cellselect.posY > figselect.posY) {
-          reviseRound('white','black');
+    //Проверка направления хода и смена очереди (стейта)
+    var colorFig = (color2) => {
+      if (color2 === 'black') {
+        var direction;
+        if (figselect.posX < cellselect.posX) {
+          direction = 'bR';
+          setRound(direction, color2);
+        } else {
+          direction = 'bL';
+          setRound(direction, color2);
+        }
+      } else {
+        if (figselect.posX < cellselect.posX) {
+          direction = 'wR';
+          setRound(direction, color2);
+        } else {
+          direction = 'wL';
+          setRound(direction, color2);
         }
       }
     }
 
-   
+    //Функция для простого хода в зависимости от направления
+    var simpleMove = (direction) => {
+      if (direction === 'bR') {
+        figselect.bRight();
+      } else if (direction === 'bL') {
+        figselect.bLeft();
+      } else if (direction === 'wR') {
+        figselect.wRight();
+      } else if (direction === 'wL') {
+        figselect.wLeft();
+      }
+    }
 
-    return ( 
-    <div className = 'figure' > {
-//Отрисовывем на странице фигуры по координатам Y X
+    //Функция для двойного хода в зависимости от направления
+    var superMove = (direction) => {
+      if (direction === 'bR') {
+        figselect.bbRight();
+      } else if (direction === 'bL') {
+        figselect.bbLeft();
+      } else if (direction === 'wR') {
+        figselect.wwRight();
+      } else if (direction === 'wL') {
+        figselect.wwLeft();
+      }
+    }
+
+    //Сбрасыываем figselect до значения после клика 
+    var returnFigPos = (color, direction) => {
+      if (figselect.color === color) {
+        if (direction === 'wR') {
+          figselect.posX -= 50;
+          figselect.posY += 50;
+        } else {
+          figselect.posX += 50;
+          figselect.posY += 50;
+        }
+      } else {
+        if (direction === 'bR') {
+          figselect.posX -= 50;
+          figselect.posY -= 50;
+        } else {
+          figselect.posX += 50;
+          figselect.posY -= 50;
+        }
+      }
+    }
+  
+    var checkCell = (direction) => {
+      //Проверяем есть ли в соседних ячейках фигуры для выбора типа хода и
+      //готовим координаты соседней ячейки для сравнения 
+      //в зависимости от направления и цвета фигуры
+      if (figselect.color === 'black') {
+        if (direction === 'wR') {
+          var Y = -50;
+          var X = 50;
+        } else {
+          var Y = -50;
+          var X = -50;
+        }
+      } else {
+        if (direction === 'bR') {
+          var Y = 50;
+          var X = 50;
+        } else {
+          var Y = 50;
+          var X = -50;
+        }
+      }
+
+      //Проверяем есть ли на соседней ячейке фигура
+      for (let i = 0; i < Chess.length; i++) {
+        if (
+          Chess[i].posY === (figselect.posY + Y) &&
+          Chess[i].posX === (figselect.posX + X) &&
+          Chess[i].color !== figselect.color
+        ) {
+          returnFigPos('black', direction);
+          
+          superMove(direction);
+          if (Chess[i].color === 'black') {
+            Chess[i].posX = 330;
+            Chess[i].posY = -80;
+          } else {
+            Chess[i].posX = 20;
+            Chess[i].posY = 420;
+          }
+        }
+      }
+    }
+
+    //Инициализируем ход в зависимости от checkCell
+    var movingFig = (direction) => {
+      !checkCell(direction) && simpleMove(direction);
+    }
+
+    //Проверка на обязательные ходы
+    var checkObligation = (round) => {
+      var 
+        Y = 50,
+        X = 50;
+
+      //Определяем координаты для проверки соседних ячеек
+      var checkDirect = (Y, X, j, i) => {
+        if (
+          Chess[i].posX - X === Chess[j].posX &&
+          Chess[i].posY - Y === Chess[j].posY &&
+          Chess[i].color !== Chess[j].color
+        ) {
+          figselect = Chess[i];
+        } else if (
+          Chess[i].posX + X === Chess[j].posX &&
+          Chess[i].posY - Y === Chess[j].posY &&
+          Chess[i].color !== Chess[j].color
+        ) {
+          figselect = Chess[i];
+        }
+      }
+
+      for (let i = 0; i < Chess.length; i++) {
+        for (let j = 0; j < Chess.length; j++) {
+          //Проверяем соседние ячейки для черных фигур или белых
+          if (round === 'black') {
+            checkDirect(Y, X, j, i);
+          } else {
+            checkDirect(-Y, X, j, i);
+          }
+        }
+      }
+    }
+
+    //Проверяем если была выбрана фигура и ячейка и вызываем обработчик очереди
+    if (cellselect != null && figselect != null) {
+      if (cellselect.color !== 'whitecell') {
+        checkObligation(round);
+        if (round === 'black' && cellselect.posY < figselect.posY) {
+          reviseRound('black', 'white');
+        } else if (round === 'white' && cellselect.posY > figselect.posY) {
+          reviseRound('white', 'black');
+        }
+      }
+    }
+
+    return (
+      <div className = 'figure' > {
+      //Отрисовываем на странице фигуры по координатам Y X
         Chess.map((value, index) => {
           return ( 
           <div className = {
@@ -345,21 +390,25 @@ class App extends Component {
   state = {
     selectValue: null,
     chesss: [],
-    round : 'white'
+    round: 'white'
   };
-//коллбэк для получения координат выбранной ячейки из Table
-// и добавления их в стейт
+
+  //коллбэк для получения координат выбранной ячейки из Table
+  // и добавления их в стейт
   updateData = (value) => {
     this.setState({
       selectValue: value
     })
   };
-//коллбэк для сброса стейта (выбранная ячейка) из Figure
+
+  //коллбэк для сброса стейта (выбранная ячейка) из Figure
   cleanCell = (value) => {
     this.setState({
       selectValue: value
     })
   };
+
+  //коллбэк для получения раунда в UI
   updateRound = (value) => {
     this.setState({
       round: value
@@ -372,7 +421,8 @@ class App extends Component {
       white = "white";
 
     var chess = [];
-//Создаем функцию конструктор для фигур и методы для перемещения по доске
+
+    //Создаем функцию конструктор для фигур и методы для перемещения по доске
     function CreateObj(posY, posX, color) {
       this.posX = posX;
       this.posY = posY;
@@ -410,8 +460,9 @@ class App extends Component {
         this.posX += 100;
       }
     }
-//Создаем массив с данными о каждой фигуре
-    for (var i = 0; i < 32; i++) {
+
+    //Создаем массив с данными о каждой фигуре
+    for (let i = 0; i < 32; i++) {
       if (i <= 4 && i >= 1) {
         chess.push(
           new CreateObj(fRowTop, fRowLeft, white)
@@ -445,7 +496,7 @@ class App extends Component {
       }
     }
 
-//Добавляем в стейт полученный массив для использования его в рендере
+    //Добавляем в стейт полученный массив для использования его в рендере
     if (this.state.chesss == 0) {
       this.setState({
         chesss: chess
@@ -455,9 +506,10 @@ class App extends Component {
 
   render() {
     var cellposition = this.state.selectValue;
-//Отправляем в Figure массив с обьектами и координаты выбранной ячейки 
-    return ( 
-    <div >
+
+    //Отправляем в Figure массив с обьектами и координаты выбранной ячейки 
+    return (
+      <div >
       <Figure chess = {
         this.state.chesss
       }
